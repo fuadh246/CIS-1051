@@ -6,16 +6,18 @@ from langchain.schema import Document
 
 from utils.file_reader import read_file
 from utils.chunker import chunk_text
-from utils.vector_store import get_vector_store, search_vector_store
+from utils.vector_store import get_vector_store, search_vector_store, load_vector_store
 
 load_dotenv()
 client = OpenAI(api_key=os.getenv("OPENAI_API_KEY"))
 
 app = FastAPI()
-docs_db = None
 
 UPLOAD_DIR = "data/uploaded_docs"
 os.makedirs(UPLOAD_DIR, exist_ok=True)
+
+docs_db = load_vector_store()
+
 @app.post("/upload/")
 async def upload_file(file: UploadFile = File(...)):
     file_path = os.path.join(UPLOAD_DIR, file.filename)
@@ -25,7 +27,7 @@ async def upload_file(file: UploadFile = File(...)):
     chunks = chunk_text(text)
     documents = [Document(page_content=chunk, metadata={"source": file.filename}) for chunk in chunks]
     global docs_db
-    docs_db = get_vector_store(documents)
+    docs_db = get_vector_store(documents) 
     return {"status": "uploaded and indexed", "chunks": len(chunks)}
 
 @app.get("/uploaded_files/")
@@ -45,6 +47,7 @@ async def get_uploaded_file(filename: str):
 
 @app.post("/ask/")
 async def ask_question(question: str = Form(...)):
+    global docs_db
     if docs_db is None:
         return {"error": "No documents uploaded yet."}
     docs = search_vector_store(docs_db, question)
