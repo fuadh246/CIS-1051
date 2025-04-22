@@ -28,6 +28,21 @@ async def upload_file(file: UploadFile = File(...)):
     docs_db = get_vector_store(documents)
     return {"status": "uploaded and indexed", "chunks": len(chunks)}
 
+@app.get("/uploaded_files/")
+async def get_uploaded_files():
+    files = os.listdir(UPLOAD_DIR)
+    return {"uploaded_files": files}
+
+@app.get("/uploaded_files/{filename}")
+async def get_uploaded_file(filename: str):
+    file_path = os.path.join(UPLOAD_DIR, filename)
+    if os.path.exists(file_path):
+        with open(file_path, "r") as f:
+            content = f.read()
+        return {"filename": filename, "content": content}
+    else:
+        return {"error": "File not found"}
+
 @app.post("/ask/")
 async def ask_question(question: str = Form(...)):
     if docs_db is None:
