@@ -2,15 +2,15 @@
 
 #### Your name
 
-TODO
+Fuad Hassan
 
 #### Your section leader's name
 
-TODO
+Elmira Talebianaraki (TA)
 
 #### Project title
 
-TODO
+ShareNote-AMA-Bot
 
 ***
 
@@ -18,12 +18,12 @@ Short answers for the below questions suffice. If you want to alter your plan fo
 
 #### What have you done for your project so far?
 
-TODO
+Backend is done. I can uplaod files and ask questions.
 
 #### What have you not done for your project yet?
 
-TODO
+Make the UI better
 
 #### What problems, if any, have you encountered?
 
-TODO
+No
